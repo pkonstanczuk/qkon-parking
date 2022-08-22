@@ -9,6 +9,7 @@ rm -rf ./src/contract
 rm -rf ./build
 mkdir -p ./docs
 mkdir -p ./src/contract
+mkdir -p "${PARENT_PATH}"/../devops/contracts-ui/contracts
 #https://openapi-generator.tech/docs/generators/python-legacy/
 java -jar ../shared/openapi-generator-cli.jar generate -g python-flask -i ./contract.yaml -o ./build/ --additional-properties=useNose=true,packageName=contract,generateSourceCodeOnly=true
 cp "${PARENT_PATH}"/build/contract/openapi/openapi.yaml "${PARENT_PATH}"/../devops/contracts-ui/contracts/${CONTRACT_FILE_NAME}
