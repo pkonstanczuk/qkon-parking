@@ -1,0 +1,50 @@
+PageNumber:
+  type: integer
+  description: "Index of page to fetch. Indexes start at 1"
+  minimum: 1
+  default: 1
+PageSize:
+  type: integer
+  description: "Number of items to display on each page"
+  default: 10000
+DateTimeValue:
+  type: integer
+  example: 2147483647
+  description: 'Date & time stored as epoch second in UTC timezone'
+Location:
+  required:
+    - latitude
+    - longitude
+  type: object
+  properties:
+    latitude:
+      $ref: '#/Latitude'
+    longitude:
+      $ref: '#/Longitude'
+    address:
+      $ref: '#/Address'
+
+Longitude:
+  type: number
+  example: 52.249974
+  minimum: -180
+  maximum: 180
+  description: "Needs to have up to 5 digits after comma"
+Latitude:
+  type: number
+  maximum: 90
+  minimum: -90
+  example: 21.07012
+  description: "Needs to have up to 5 digits after comma"
+Address:
+  type: object
+  properties:
+    label:
+      type: string
+      maxLength: 500
+      example: 'ul. Pulawska 2,  02-566 Warsaw, Poland'
+EmailDefinition:
+  maxLength: 300
+  type: string
+  format: email
+  example: "jan.kowalski@aleet.co"

@@ -1,0 +1,164 @@
+---
+openapi: 3.0.0
+info:
+  title: User Service Api
+  description: |
+    # Introduction
+    This is the description of the *User Service Api*. 
+    This specification is written in **OpenAPI Specification version 3** and can
+    be displayed using [Swagger](https://swagger.io). 
+    ---
+    
+    # Authentication
+    All APIs use the [HTTPS Authentication](https://tools.ietf.org/html/rfc7235)
+    with [JWT](https://jwt.io) passed as [Bearer token](https://swagger.io/docs/specification/authentication/bearer-authentication/).
+    Uses [AWS Cognito](https://aws.amazon.com/cognito/) as authentication and authorization service.
+    
+    For clientId use: **1c6tnv36hslllcu6lh94q10pjb** . Select **openId** profile to make it work properly.
+    
+    To reset Cognito logging in [click here.](https://vizyah-dev.auth.eu-central-1.amazoncognito.com/logout?client_id=1c6tnv36hslllcu6lh94q10pjb)
+    
+   
+
+  contact:
+    email: p.konstanczuk@gmail.com
+  version: 0.0.5
+servers:
+  - url: https://dev.qkon.com/user-service
+    description: DEV
+security:
+  - jwtAuthorizerOauth: [ openid, aws.cognito.signin.user.admin ]
+paths:
+  /users/admins:
+    post:
+      summary: Creates admin
+      operationId: createAdmin
+      x-amazon-apigateway-integration:
+        type: "AWS_PROXY"
+        httpMethod: "POST"
+        uri: "${lambda_arn}"
+        payloadFormatVersion: "2.0"
+      parameters:
+        - $ref: '#/components/parameters/forcePasswordChange'
+        - $ref: '#/components/parameters/sendRegistrationEmail'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenericUser'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericUser'
+        "401":
+          description: Unauthorized
+  /users/customers:
+    post:
+      summary: Creates customer
+      operationId: createCustomer
+      x-amazon-apigateway-integration:
+        type: "AWS_PROXY"
+        httpMethod: "POST"
+        uri: "${lambda_arn}"
+        payloadFormatVersion: "2.0"
+      parameters:
+        - $ref: '#/components/parameters/forcePasswordChange'
+        - $ref: '#/components/parameters/sendRegistrationEmail'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenericUser'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericUser'
+        "401":
+          description: Unauthorized
+components:
+  schemas:
+    GenericUser:
+      required:
+        - email
+        - name
+        - surname
+      properties:
+        token:
+          type: string
+          maxLength: 100
+          minLength: 1
+          example: 43098-320-323423-3243
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+          minLength: 1
+          example: Piotr
+        surname:
+          type: string
+          maxLength: 100
+          minLength: 1
+          example: Kowalski
+        email:
+          $ref: './../shared/shared.yaml#/EmailDefinition'
+#                ./../shared-contract/aleetDomain.yaml#/EmailDefinition
+  parameters:
+    forcePasswordChange:
+      name: forcePasswordChange
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: true
+    sendRegistrationEmail:
+      name: sendRegistrationEmail
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+    emailInPath:
+      name: email
+      in: query
+      required: false
+      schema:
+        $ref: './../shared/shared.yaml#/EmailDefinition'
+    pageNumber:
+      name: pageNumber
+      in: query
+      required: false
+      schema:
+        $ref: './../shared/shared.yaml#/PageNumber'
+    pageSize:
+      name: pageSize
+      in: query
+      required: false
+      schema:
+        $ref: './../shared/shared.yaml#/PageSize'
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+    jwtAuthorizerOauth: # This generates authorizer on API gateway on aws
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'https://vizyah-dev.auth.eu-central-1.amazoncognito.com/authorize'
+          refreshUrl: 'https://vizyah-dev.auth.eu-central-1.amazoncognito.com/oauth2/token'
+          scopes:
+            openid: 'requests user permissions'
+      x-amazon-apigateway-authorizer:
+        type: jwt
+        jwtConfiguration:
+          issuer: 'https://cognito-idp.eu-central-1.amazonaws.com/${cognito_user_pool_id}'
+          audience:
+            - ${cognito_client_id}
+        identitySource: "$request.header.Authorization"
+
