@@ -36,12 +36,14 @@ validate-black-job:       # This job runs in the build stage, which runs first.
     - ./black.sh
 
 build-ci-image-job:       # This job runs in the build stage, which runs first.
-  image: python:3.7.4-alpine3.10
+  image: aleetco/vizyah-ci
   stage: build
-#  tags:
-#    - ci-image*
   script:
     - devops/ci-image/build.sh --publish
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+      changes:
+        - devops/ci-image/Dockerfile
 #
 #build-job:       # This job runs in the build stage, which runs first.
 #  stage: build
