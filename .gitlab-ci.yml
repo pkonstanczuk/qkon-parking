@@ -40,11 +40,11 @@ build-ci-image-job:       # This job runs in the build stage, which runs first.
   stage: build
   script:
     - devops/ci-image/build.sh --publish
-  rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-      changes:
-        - devops/ci-image/Dockerfile
-#
+#  rules:
+#    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+#      changes:
+#        - devops/ci-image/Dockerfile
+##
 #build-job:       # This job runs in the build stage, which runs first.
 #  stage: build
 #  script:
