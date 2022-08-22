@@ -58,6 +58,7 @@ validate-black-job:       # This job runs in the build stage, which runs first.
 
 pages:
   image: aleetco/vizyah-ci
+  stage: validate
   script:
     - user-service/prepare-contract.sh
     - mv devops/contracts-ui/ public/
