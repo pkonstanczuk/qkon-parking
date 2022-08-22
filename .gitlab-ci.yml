@@ -34,6 +34,14 @@ validate-black-job:       # This job runs in the build stage, which runs first.
   stage: validate
   script:
     - ./black.sh
+
+build-ci-image-job:       # This job runs in the build stage, which runs first.
+  image: python:3.7.4-alpine3.10
+  stage: build
+  tags:
+    - ci-image*
+  script:
+    - devops/ci-image/build.sh --publish
 #
 #build-job:       # This job runs in the build stage, which runs first.
 #  stage: build
