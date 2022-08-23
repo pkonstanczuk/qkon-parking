@@ -96,3 +96,5 @@ poetry.lock
 /user-service/docs/
 /public/
 /devops/contracts-ui/contracts/
+#sonar
+.coverage
