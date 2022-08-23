@@ -1,0 +1,4 @@
+pytest
+pytest-cov>=2.11.1
+coverage>=4.0.3
+poetry

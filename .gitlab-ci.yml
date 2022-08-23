@@ -24,7 +24,7 @@ stages: # List of stages for jobs, and their order of execution
   - build
 #  - test
 #  - deploy
-validate-user-contract-job: # This job runs in the build stage, which runs first.
+validate-user-service-job: # This job runs in the build stage, which runs first.
   image: registry.gitlab.com/qak87/qparking/qparking-ci:latest
   stage: validate
   script:
@@ -40,6 +40,21 @@ validate-user-contract-job: # This job runs in the build stage, which runs first
       coverage_report:
         coverage_format: cobertura
         path: user-service/test-reports/coverage.xml
+
+validate-shared-qkon-job:
+  image: registry.gitlab.com/qak87/qparking/qparking-ci:latest
+  stage: validate
+  script:
+    - shared/test.sh
+  artifacts:
+    paths:
+      - shared/test-reports/coverage.xml
+      - shared/test-reports/nosetests.xml
+    reports:
+      junit: shared/test-reports/nosetests.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: shared/test-reports/coverage.xml
 
 publish-user-contract-job: # This job runs in the build stage, which runs first.
   extends:

@@ -1,0 +1,51 @@
+from unittest import TestCase
+
+from shared_qkon.qkon_auth import AuthService, SecurityRole
+from shared_qkon.qkon_aws import LambdaConsts
+
+
+class TestAuthService(TestCase):
+    def test_cognito(self):
+        auth_service: AuthService = AuthService(simple_security_enabled=False)
+        auth_service.authorize(
+            "Bearer eyJraWQiOiJKWHluUkpubTNhUlljaG4xK0VXRm5Rc0Fqa1FBTkltY3lKN1lZVGE3ekgwPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI2MmJmNjMxYy0wYzFlLTRkZDMtYTgxYS05MWU4MzhiNzM2NmEiLCJjb2duaXRvOmdyb3VwcyI6WyJ2aXp5YWg6YWRtaW4iLCJwa286dXNlcnMiXSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLmV1LWNlbnRyYWwtMS5hbWF6b25hd3MuY29tXC9ldS1jZW50cmFsLTFfZ3VSYm5FQkZkIiwidmVyc2lvbiI6MiwiY2xpZW50X2lkIjoiNmZtMm5sZWtpaDM4cHY5OHZxZGo5c2U1cHAiLCJldmVudF9pZCI6ImY3NmVmNzY0LTg2YjYtNDdkZi1hOGUyLWEwMTc1YTg4N2YwMSIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoicGhvbmUgb3BlbmlkIHByb2ZpbGUgZW1haWwiLCJhdXRoX3RpbWUiOjE2NTM5MDE0NDksImV4cCI6MTY1MzkwNTA0OSwiaWF0IjoxNjUzOTAxNDQ5LCJqdGkiOiJiNmExOWNiOC0wODIxLTQ4ZmYtOGY1Yi02ZGU1YTE3NmRjM2UiLCJ1c2VybmFtZSI6IjYyYmY2MzFjLTBjMWUtNGRkMy1hODFhLTkxZTgzOGI3MzY2YSJ9.PURMl8aG8eKsvQT1sfDiZApMrfSsOoGiAx3_dj86TTZqmXS66A_i_ihNbKjX1lTjcgwnbY6x95E33UBXd-P7e2Zz1Cu0_qaFBQILqycaRnl_fgMN5E1Iy-GTo5jKBMHqFxvHrVbvlVCgA1ZOGZGg9IBxZpbPNqQ_B7r2A72ObTfBeFmNyCtdMr_s-aqgtsRY9g810oSHK0NB-uXSNks5PDcLJ4a4o_SM9kQxA9Nq24E1CJGFJ4SHgrPqSukZxl9siyIRC4HF4GPirl1BZcEyNwAajTJYLD65VYxAUKRx9zfCNinkzT7WNye7cFx8u2ZelbNPZGibWNmPziaSXKbehQ"
+        )
+        assert auth_service.is_authorized()
+
+    def test_requires_scope_driver_in_ztm(self):
+        auth_service: AuthService = AuthService(simple_security_enabled=False)
+        auth_service.authorize(
+            "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImRJcnF2ejZlLThEOWV6VG1NdXhFaSJ9.eyJodHRwczovL3ZpenlhaC5hbGVldC5jby9lbWFpbCI6ImRyaXZlci10ZXN0QGFsZWV0LmNvIiwiaXNzIjoiaHR0cHM6Ly9hbGVldC1kZXYuZXUuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDYxNWVhOTExNDJjZmJlMDA2OTA3NGMwYiIsImF1ZCI6WyJhbGVldC1kcml2ZXItc2VydmljZSIsImh0dHBzOi8vYWxlZXQtZGV2LmV1LmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2MzM1OTk0MzcsImV4cCI6MTYzMzY4NTgzNywiYXpwIjoiRlhPN3k2RzduWGFPTGE2dGo4RGdMekRqa0lHZWEwSFAiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwicGVybWlzc2lvbnMiOlsiWlRNOkRSSVZFUiJdfQ.Wk2qMUj2g3IDPL_GgBAufMQqzPnVxIVMp_8W0mtVrQOJEmlSqG0ny4qRWZDRErkz96MACQUhfkkPII625C9IuF7koyBA-Gt1wV5XkQAwkcp52LMDGksV8lV7LBPqb9VKp5k6raCLW6kQVi7WojXzw5dW1L-F9AJCG41Ptw_I6YBfbr_1W1FvIDHHOHiWvcP1o2HIcKrAi30fiu8W0co9j3qPPY8UAWogmpfzeTd0vUUmyojbVzyBFmHMM-kbi2rwweXUZojefRLEvAAakxvOD4CGvAET_74z1Z0oXzspPt_4ZJ7sPD9V7vUeTxSsB5UZLpiDQHmXiC6Mx6X-RVdpgQ"
+        )
+        assert auth_service.has_role(role=SecurityRole.DRIVER_FLEET, fleet_token="ZTM")
+        assert auth_service.get_username() == "driver-test@aleet.co"
+        assert not auth_service.has_role(role=SecurityRole.VIZYAH_ADMIN)
+
+    def test_requires_scope_super_admin(self):
+        auth_service: AuthService = AuthService(simple_security_enabled=False)
+        auth_service.authorize(
+            "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImRJcnF2ejZlLThEOWV6VG1NdXhFaSJ9.eyJodHRwczovL3ZpenlhaC5hbGVldC5jby9lbWFpbCI6InAua29uc3RhbmN6dWtAYWxlZXQuY28iLCJpc3MiOiJodHRwczovL2FsZWV0LWRldi5ldS5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLWFwcHN8cC5rb25zdGFuY3p1a0BhbGVldC5jbyIsImF1ZCI6WyJhbGVldC1kcml2ZXItc2VydmljZSIsImh0dHBzOi8vYWxlZXQtZGV2LmV1LmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2MzM2MDA5OTAsImV4cCI6MTYzMzY4NzM5MCwiYXpwIjoiRlhPN3k2RzduWGFPTGE2dGo4RGdMekRqa0lHZWEwSFAiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwicGVybWlzc2lvbnMiOlsiVklaWUFIOkFETUlOIl19.lNnMcL3Xi6Gw9AKNZQFrr4RH0TzHTJA9_S7jJHh52AtGdOaTbFkTmCGTkFthAf7eoX6gL8oojQtl7u-rKv4FgWp1RjqYrVCGKEt1bCSUDn4VUj33AekTeM0AlmS4_QyO8m-KQ23l8J6pEcpVzCQj4RkThHkZNhGPmxqM6U2A2vQG1CLlOi7fwejBCQg0Cv4mQN6NRc24AotZCTAEEkUQx2uo6IJNQGAjbh1ywnK8FsDC1Abp-jtXhsQAn_yaRQojCK-NUTrtIg_NrqpYHgUXKXB0_GSTixpR9ErZAafZUSbhdWT3bIEkNEv_XlWLfy0f-PeGROd8dPT6V0r9VD5THA"
+        )
+        assert auth_service.get_username() == "p.konstanczuk@aleet.co"
+        assert auth_service.has_role(role=SecurityRole.VIZYAH_ADMIN)
+
+    def test_requires_scope_super_admin_lambda_event(self):
+        auth_service: AuthService = AuthService(simple_security_enabled=False)
+        lambda_event = {
+            LambdaConsts.ROUTE_KEY: "POST /fleets",
+            LambdaConsts.HEADERS: {
+                LambdaConsts.AUTHORIZATION: "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImRJcnF2ejZlLThEOWV6VG1NdXhFaSJ9.eyJodHRwczovL3ZpenlhaC5hbGVldC5jby9lbWFpbCI6InAua29uc3RhbmN6dWtAYWxlZXQuY28iLCJpc3MiOiJodHRwczovL2FsZWV0LWRldi5ldS5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLWFwcHN8cC5rb25zdGFuY3p1a0BhbGVldC5jbyIsImF1ZCI6WyJhbGVldC1kcml2ZXItc2VydmljZSIsImh0dHBzOi8vYWxlZXQtZGV2LmV1LmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2MzM2MDA5OTAsImV4cCI6MTYzMzY4NzM5MCwiYXpwIjoiRlhPN3k2RzduWGFPTGE2dGo4RGdMekRqa0lHZWEwSFAiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwicGVybWlzc2lvbnMiOlsiVklaWUFIOkFETUlOIl19.lNnMcL3Xi6Gw9AKNZQFrr4RH0TzHTJA9_S7jJHh52AtGdOaTbFkTmCGTkFthAf7eoX6gL8oojQtl7u-rKv4FgWp1RjqYrVCGKEt1bCSUDn4VUj33AekTeM0AlmS4_QyO8m-KQ23l8J6pEcpVzCQj4RkThHkZNhGPmxqM6U2A2vQG1CLlOi7fwejBCQg0Cv4mQN6NRc24AotZCTAEEkUQx2uo6IJNQGAjbh1ywnK8FsDC1Abp-jtXhsQAn_yaRQojCK-NUTrtIg_NrqpYHgUXKXB0_GSTixpR9ErZAafZUSbhdWT3bIEkNEv_XlWLfy0f-PeGROd8dPT6V0r9VD5THA"
+            },
+        }
+        auth_service.authorize_from_lambda_event(lambda_event)
+        assert auth_service.get_username() == "p.konstanczuk@aleet.co"
+        assert auth_service.has_role(role=SecurityRole.VIZYAH_ADMIN)
+        assert auth_service.get_fleets_user_has_any_role_in() == []
+
+    def test_requires_scope_ZTM_admin(self):
+        auth_service: AuthService = AuthService(simple_security_enabled=False)
+        auth_service.authorize(
+            "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImRJcnF2ejZlLThEOWV6VG1NdXhFaSJ9.eyJodHRwczovL3ZpenlhaC5hbGVldC5jby9lbWFpbCI6InByemVtZWsua29uc3RhbmN6dWtAZ21haWwuY29tIiwiaXNzIjoiaHR0cHM6Ly9hbGVldC1kZXYuZXUuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDYxMjMyY2IwN2ZhZGVkMDA2ODk4MTc1ZiIsImF1ZCI6WyJhbGVldC1kcml2ZXItc2VydmljZSIsImh0dHBzOi8vYWxlZXQtZGV2LmV1LmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2MzM2MDExNDQsImV4cCI6MTYzMzY4NzU0NCwiYXpwIjoiRlhPN3k2RzduWGFPTGE2dGo4RGdMekRqa0lHZWEwSFAiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwicGVybWlzc2lvbnMiOlsiWlRNOkFETUlOIl19.LeompqwkJTVioGarkK8wDO5OzD9NONK5js5piwYEMH6pGn9kEKNcwcG3D_KCWWxag_z_tXjoZ6cTUrUlfHuCDA288ufKqq4N7aEBGMXyosH3YKDo5g1-ep7WM0iNv_KIjB_ASQzpkGQkwvUn8rDqI3NpNei9bG67AXlw5NKUIPxXbvmfClfEag8_tnIKiMt1fXKqwtFPvHhoD3p9aFkWZNsKmmvmF7dnhkiUX1zcKjL-iZkzfY28SmtMBvZ-9F4MdKx_CTmomRsk-O2pLKFgFbtEpUUl_FXHhSTPxYFihtBXskyTsW8_57Gs13TDsxg45DAqfpGEPKbfnzdifgXW3A"
+        )
+        assert auth_service.get_username() == "przemek.konstanczuk@gmail.com"
+        assert auth_service.has_role(role=SecurityRole.ADMIN_FLEET, fleet_token="ZTM")

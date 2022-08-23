@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "shared-qkon"
+version = "1.0.0"
+description = "Common python libraries for services."
+authors = ["pko <przemek.konstanczuk@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+python-jose = "3.3.0"
+fastapi = "0.78.0"
+typeguard = "2.13.3"
+boto3 = "1.24.14"
+boto3-stubs = {extras = ["essential"], version = "^1.24.43"}
+
+[tool.poetry.dev-dependencies]
+pytest = "7.0.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
