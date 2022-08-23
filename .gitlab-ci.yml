@@ -40,6 +40,8 @@ validate-user-service-job: # This job runs in the build stage, which runs first.
       coverage_report:
         coverage_format: cobertura
         path: user-service/test-reports/coverage.xml
+  rules:
+    - if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH
 
 validate-shared-qkon-job:
   image: registry.gitlab.com/qak87/qparking/qparking-ci:latest
