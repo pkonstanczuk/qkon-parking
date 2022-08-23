@@ -23,7 +23,7 @@ stages: # List of stages for jobs, and their order of execution
   - validate
   - build
 #  - test
-#  - deploy
+  - deploy
 validate-user-service-job: # This job runs in the build stage, which runs first.
   image: registry.gitlab.com/qak87/qparking/qparking-ci:latest
   stage: validate
@@ -112,7 +112,7 @@ build-ci-image-job: # This job runs in the build stage, which runs first.
 
 
 pages:
-  stage: validate
+  stage: deploy
   needs:
     - publish-user-service-job
   dependencies:
