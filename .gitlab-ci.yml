@@ -28,10 +28,11 @@ validate-user-contract-job: # This job runs in the build stage, which runs first
   image: registry.gitlab.com/qak87/qparking/qparking-ci:latest
   stage: validate
   script:
-    - user-service/test.sh
+    - user-service/prepareArtifacts.sh
   artifacts:
     paths:
       - devops/contracts-ui/contracts
+      - user-service/build
       - user-service/test-reports/coverage.xml
       - user-service/test-reports/nosetests.xml
     reports:
@@ -39,8 +40,16 @@ validate-user-contract-job: # This job runs in the build stage, which runs first
       coverage_report:
         coverage_format: cobertura
         path: user-service/test-reports/coverage.xml
+
+publish-user-contract-job: # This job runs in the build stage, which runs first.
+  extends:
+    - validate-user-contract-job
+  stage: build
+  script:
+    - user-service/prepareArtifacts.sh --publish
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+
 validate-black-job: # This job runs in the build stage, which runs first.
   image: registry.gitlab.com/qak87/qparking/qparking-ci:latest
   stage: validate
