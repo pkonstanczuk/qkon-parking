@@ -114,9 +114,9 @@ build-ci-image-job: # This job runs in the build stage, which runs first.
 pages:
   stage: validate
   needs:
-    - validate-user-contract-job
+    - publish-user-service-job
   dependencies:
-    - validate-user-contract-job
+    - publish-user-service-job
   script:
     - mv devops/contracts-ui/ public/
   artifacts:
