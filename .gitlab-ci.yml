@@ -22,7 +22,7 @@ stages: # List of stages for jobs, and their order of execution
   - initialize
   - validate
   - build
-#  - test
+  #  - test
   - deploy
 validate-user-service-job: # This job runs in the build stage, which runs first.
   image: registry.gitlab.com/qak87/qparking/qparking-ci:latest
@@ -41,7 +41,7 @@ validate-user-service-job: # This job runs in the build stage, which runs first.
         coverage_format: cobertura
         path: user-service/test-reports/coverage.xml
   rules:
-    - if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 
 validate-shared-qkon-job:
   image: registry.gitlab.com/qak87/qparking/qparking-ci:latest
@@ -57,6 +57,9 @@ validate-shared-qkon-job:
       coverage_report:
         coverage_format: cobertura
         path: shared/test-reports/coverage.xml
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
 
 publish-user-service-job: # This job runs in the build stage, which runs first.
   extends:
@@ -72,6 +75,9 @@ validate-black-job: # This job runs in the build stage, which runs first.
   stage: validate
   script:
     - ./black.sh
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
 
 build-ci-image-job: # This job runs in the build stage, which runs first.
   image: docker:20.10.16
