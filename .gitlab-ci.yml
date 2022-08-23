@@ -56,9 +56,9 @@ validate-shared-qkon-job:
         coverage_format: cobertura
         path: shared/test-reports/coverage.xml
 
-publish-user-contract-job: # This job runs in the build stage, which runs first.
+publish-user-service-job: # This job runs in the build stage, which runs first.
   extends:
-    - validate-user-contract-job
+    - validate-user-service-job
   stage: build
   script:
     - user-service/prepareArtifacts.sh --publish
