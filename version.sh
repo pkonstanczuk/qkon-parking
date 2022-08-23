@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION=${BITBUCKET_BUILD_NUMBER}
+VERSION=${CI_PIPELINE_IID}
 if [ -z "$VERSION" ]
 then
       VERSION=latest
