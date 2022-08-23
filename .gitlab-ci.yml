@@ -33,8 +33,12 @@ validate-user-contract-job: # This job runs in the build stage, which runs first
     paths:
       - devops/contracts-ui/contracts
       - user-service/test-reports/coverage.xml
+      - user-service/test-reports/nosetests.xml
     reports:
-      junit: user-service/test-reports/coverage.xml
+      junit: user-service/test-reports/nosetests.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: user-service/test-reports/coverage.xml
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
 validate-black-job: # This job runs in the build stage, which runs first.
