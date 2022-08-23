@@ -15,38 +15,43 @@
 # https://docs.gitlab.com/ee/development/cicd/templates.html
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
+variables:
+  DOCKER_AUTH_CONFIG: $DOCKER_AUTH_CONFIG
 
-stages:          # List of stages for jobs, and their order of execution
+stages: # List of stages for jobs, and their order of execution
+  - initialize
   - validate
   - build
 #  - test
 #  - deploy
-validate-user-contract-job:       # This job runs in the build stage, which runs first.
-  image: aleetco/vizyah-ci
+validate-user-contract-job: # This job runs in the build stage, which runs first.
+  image: registry.gitlab.com/qak87/qparking/qparking-ci:latest
   stage: validate
   script:
     - user-service/prepareContract.sh
   artifacts:
     paths:
       - devops/contracts-ui/contracts
-validate-black-job:       # This job runs in the build stage, which runs first.
-  image: aleetco/vizyah-ci
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+validate-black-job: # This job runs in the build stage, which runs first.
+  image: registry.gitlab.com/qak87/qparking/qparking-ci:latest
   stage: validate
   script:
     - ./black.sh
 
-build-ci-image-job:       # This job runs in the build stage, which runs first.
-  image: gitlab/dind
+build-ci-image-job: # This job runs in the build stage, which runs first.
+  image: docker:20.10.16
   services:
-    - docker:dind
-  stage: build
+    - docker:20.10.16-dind
+  stage: initialize
   script:
     - devops/ci-image/build.sh --publish
-#  rules:
-#    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-#      changes:
-#        - devops/ci-image/Dockerfile
-##
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+      changes:
+        - devops/ci-image/Dockerfile
+#
 #build-job:       # This job runs in the build stage, which runs first.
 #  stage: build
 #  script:
