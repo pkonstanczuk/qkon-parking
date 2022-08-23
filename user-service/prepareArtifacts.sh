@@ -16,11 +16,11 @@ cd ${PARENT_PATH}/build
 find . | grep -E "(__pycache__|.pytest_cache|\.pyc|\.iml|\.pyo$)" | xargs rm -rf
 cd ${PARENT_PATH}/src
 zip -r ${PARENT_PATH}/build/"${FILE_NAME}" ./*
-#echo 'Starting building lambda layer'
-#FILE_NAME_LAYER=${SERVICE_NAME}-layer-${version}.zip
-#${PARENT_PATH}/../shared/buildLambaLayer.sh ${SERVICE_NAME} $FILE_NAME_LAYER ${PARENT_PATH}/requirements.txt
 
 if [ "$1" == "--publish" ]; then
+FILE_NAME_LAYER=${SERVICE_NAME}-layer-${version}.zip
+${PARENT_PATH}/../shared/buildLambaLayer.sh ${SERVICE_NAME} $FILE_NAME_LAYER ${PARENT_PATH}/requirements.txt
+
 curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file ${PARENT_PATH}/build/${FILE_NAME} "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${FILE_NAME}/${version}/${FILE_NAME}"
 curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file ${PARENT_PATH}/build/${FILE_NAME} "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${FILE_NAME}/latest/${FILE_NAME}"
 fi
