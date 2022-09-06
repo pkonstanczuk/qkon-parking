@@ -1,0 +1,224 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: p.konstanczuk@gmail.com
+  description: "# Introduction\nThis is the description of the *User Service Api*.\
+    \ \nThis specification is written in **OpenAPI Specification version 3** and can\n\
+    be displayed using [Swagger](https://swagger.io). \n---\n\n# Authentication\n\
+    All APIs use the [HTTPS Authentication](https://tools.ietf.org/html/rfc7235)\n\
+    with [JWT](https://jwt.io) passed as [Bearer token](https://swagger.io/docs/specification/authentication/bearer-authentication/).\n\
+    Uses [AWS Cognito](https://aws.amazon.com/cognito/) as authentication and authorization\
+    \ service.\n\nFor clientId use: **1c6tnv36hslllcu6lh94q10pjb** . Select **openId**\
+    \ profile to make it work properly.\n\nTo reset Cognito logging in [click here.](https://parkq-dev.auth.eu-central-1.amazoncognito.com/logout?client_id=1c6tnv36hslllcu6lh94q10pjb)\n"
+  title: User Service Api
+  version: 0.0.5
+servers:
+- description: DEV
+  url: https://dev.qkon.com/user-service
+security:
+- jwtAuthorizerOauth:
+  - openid
+  - aws.cognito.signin.user.admin
+paths:
+  /users/admins:
+    post:
+      operationId: create_admin
+      parameters:
+      - explode: true
+        in: query
+        name: forcePasswordChange
+        required: false
+        schema:
+          default: true
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: sendRegistrationEmail
+        required: false
+        schema:
+          default: false
+          type: boolean
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenericUser'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericUser'
+          description: OK
+        "401":
+          description: Unauthorized
+      summary: Creates admin
+      x-amazon-apigateway-integration:
+        type: AWS_PROXY
+        httpMethod: POST
+        uri: ${lambda_arn}
+        payloadFormatVersion: "2.0"
+      x-openapi-router-controller: contract.controllers.default_controller
+  /users/customers:
+    post:
+      operationId: create_customer
+      parameters:
+      - explode: true
+        in: query
+        name: forcePasswordChange
+        required: false
+        schema:
+          default: true
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: sendRegistrationEmail
+        required: false
+        schema:
+          default: false
+          type: boolean
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenericUser'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericUser'
+          description: OK
+        "401":
+          description: Unauthorized
+      summary: Creates customer
+      x-amazon-apigateway-integration:
+        type: AWS_PROXY
+        httpMethod: POST
+        uri: ${lambda_arn}
+        payloadFormatVersion: "2.0"
+      x-openapi-router-controller: contract.controllers.default_controller
+components:
+  parameters:
+    forcePasswordChange:
+      explode: true
+      in: query
+      name: forcePasswordChange
+      required: false
+      schema:
+        default: true
+        type: boolean
+      style: form
+    sendRegistrationEmail:
+      explode: true
+      in: query
+      name: sendRegistrationEmail
+      required: false
+      schema:
+        default: false
+        type: boolean
+      style: form
+    emailInPath:
+      explode: true
+      in: query
+      name: email
+      required: false
+      schema:
+        $ref: '#/components/schemas/EmailDefinition'
+      style: form
+    pageNumber:
+      explode: true
+      in: query
+      name: pageNumber
+      required: false
+      schema:
+        $ref: '#/components/schemas/PageNumber'
+      style: form
+    pageSize:
+      explode: true
+      in: query
+      name: pageSize
+      required: false
+      schema:
+        $ref: '#/components/schemas/PageSize'
+      style: form
+  schemas:
+    GenericUser:
+      example:
+        surname: Kowalski
+        name: Piotr
+        email: jan.kowalski@aleet.co
+        token: 43098-320-323423-3243
+      properties:
+        token:
+          example: 43098-320-323423-3243
+          maxLength: 100
+          minLength: 1
+          readOnly: true
+          title: token
+          type: string
+        name:
+          example: Piotr
+          maxLength: 100
+          minLength: 1
+          title: name
+          type: string
+        surname:
+          example: Kowalski
+          maxLength: 100
+          minLength: 1
+          title: surname
+          type: string
+        email:
+          example: jan.kowalski@aleet.co
+          format: email
+          maxLength: 300
+          title: email
+          type: string
+      required:
+      - email
+      - name
+      - surname
+      title: GenericUser
+    EmailDefinition:
+      example: jan.kowalski@aleet.co
+      format: email
+      maxLength: 300
+      title: email
+      type: string
+    PageNumber:
+      default: 1
+      description: Index of page to fetch. Indexes start at 1
+      minimum: 1
+      type: integer
+    PageSize:
+      default: 10000
+      description: Number of items to display on each page
+      type: integer
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+      x-bearerInfoFunc: contract.controllers.security_controller_.info_from_bearerAuth
+    jwtAuthorizerOauth:
+      flows:
+        implicit:
+          authorizationUrl: https://parkq.auth.eu-central-1.amazoncognito.com/authorize
+          refreshUrl: https://parkq.auth.eu-central-1.amazoncognito.com/oauth2/token
+          scopes:
+            openid: requests user permissions
+      type: oauth2
+      x-amazon-apigateway-authorizer:
+        type: jwt
+        jwtConfiguration:
+          issuer: https://cognito-idp.eu-central-1.amazonaws.com/${cognito_user_pool_id}
+          audience:
+          - ${cognito_client_id}
+        identitySource: $request.header.Authorization
+      x-tokenInfoFunc: contract.controllers.security_controller_.info_from_jwtAuthorizerOauth
+      x-scopeValidateFunc: contract.controllers.security_controller_.validate_scope_jwtAuthorizerOauth

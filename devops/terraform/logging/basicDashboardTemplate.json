@@ -1,0 +1,691 @@
+{
+  "widgets": [
+    {
+      "height": 8,
+      "width": 8,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "AWS/SQS", "ApproximateAgeOfOldestMessage", "QueueName", "${environment}-FM.fifo", { "label": "${environment}-fleet-manager" } ],
+          [ "...", "${environment}-VS.fifo", { "label": "${environment}-vehicle-service" } ],
+          [ "...", "${environment}-BS.fifo", { "label": "${environment}-booking-service-v2-async" } ],
+          [ "...", "${environment}-STAT.fifo", { "label": "${environment}-statistics-service-async" } ]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "${aws_region}",
+        "title": "Max message waiting time - SQS",
+        "period": 60,
+        "stat": "Maximum"
+      }
+    },
+    {
+      "height": 8,
+      "width": 8,
+      "type": "metric",
+      "properties": {
+        "period": 60,
+        "metrics": [
+          [ "AWS/Lambda", "ConcurrentExecutions", "FunctionName", "${environment}-fleet-manager", { "stat": "Maximum" } ],
+          [ "...", "${environment}-vehicle-service", { "stat": "Maximum" } ],
+          [ "...", "${environment}-booking-service-v2-async", { "stat": "Maximum" } ],
+          [ "...", "${environment}-statistics-service-async", { "stat": "Maximum" } ],
+          [ "...", "${environment}-assignment-service-async", { "stat": "Maximum" } ]
+        ],
+        "region": "${aws_region}",
+        "title": "Concurrent Lambda executions",
+        "view": "timeSeries",
+        "stacked": false
+      }
+    },
+    {
+      "height": 8,
+      "width": 8,
+      "type": "metric",
+      "properties": {
+        "period": 60,
+        "metrics": [
+          [ "AWS/Lambda", "Duration", "FunctionName", "${environment}-fleet-manager"],
+          [ "...", "${environment}-vehicle-service"],
+          [ "...", "${environment}-booking-service-v2-async"],
+          [ "...", "${environment}-statistics-service-async"],
+          [ "...", "${environment}-assignment-service-async"]
+        ],
+        "region": "${aws_region}",
+        "title": "Lambda max duration",
+        "view": "timeSeries",
+        "stacked": false
+      }
+    },
+    {
+      "height": 6,
+      "width": 6,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [
+            "AWS/Lambda",
+            "Errors",
+            "FunctionName",
+            "${environment}-fleet-manager",
+            {
+              "id": "errors1",
+              "visible": false
+            }
+          ],
+          [
+            ".",
+            "Invocations",
+            ".",
+            ".",
+            {
+              "id": "invocations1",
+              "stat": "Sum",
+              "visible": false
+            }
+          ],
+          [
+            {
+              "expression": "100 - 100 * errors1 / MAX([errors1, invocations1])",
+              "label": "Success rate (%)",
+              "id": "availability1",
+              "yAxis": "right",
+              "region": "${aws_region}"
+            }
+          ]
+        ],
+        "period": 60,
+        "region": "${aws_region}",
+        "title": "Success rate (%) - FM async message processing",
+        "yAxis": {
+          "right": {
+            "max": 100
+          }
+        },
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Sum",
+        "setPeriodToTimeRange": true
+      }
+    },
+    {
+      "height": 6,
+      "width": 6,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [
+            "AWS/Lambda",
+            "Errors",
+            "FunctionName",
+            "${environment}-vehicle-service-async",
+            {
+              "id": "errors1",
+              "visible": false
+            }
+          ],
+          [
+            ".",
+            "Invocations",
+            ".",
+            ".",
+            {
+              "id": "invocations1",
+              "stat": "Sum",
+              "visible": false
+            }
+          ],
+          [
+            {
+              "expression": "100 - 100 * errors1 / MAX([errors1, invocations1])",
+              "label": "Success rate (%)",
+              "id": "availability1",
+              "yAxis": "right",
+              "region": "${aws_region}"
+            }
+          ]
+        ],
+        "period": 60,
+        "region": "${aws_region}",
+        "title": "Success rate (%) - VS",
+        "yAxis": {
+          "right": {
+            "max": 100
+          }
+        },
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Sum",
+        "setPeriodToTimeRange": true
+      }
+    },
+    {
+      "height": 6,
+      "width": 6,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [
+            "AWS/Lambda",
+            "Errors",
+            "FunctionName",
+            "${environment}-booking-service-v2-async",
+            {
+              "id": "errors1",
+              "visible": false
+            }
+          ],
+          [
+            ".",
+            "Invocations",
+            ".",
+            ".",
+            {
+              "id": "invocations1",
+              "stat": "Sum",
+              "visible": false
+            }
+          ],
+          [
+            {
+              "expression": "100 - 100 * errors1 / MAX([errors1, invocations1])",
+              "label": "Success rate (%)",
+              "id": "availability1",
+              "yAxis": "right",
+              "region": "${aws_region}"
+            }
+          ]
+        ],
+        "period": 60,
+        "region": "${aws_region}",
+        "title": "Success rate (%) - BS async message processing",
+        "yAxis": {
+          "right": {
+            "max": 100
+          }
+        },
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Sum",
+        "setPeriodToTimeRange": true
+      }
+    },
+    {
+      "height": 6,
+      "width": 6,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [
+            "AWS/Lambda",
+            "Errors",
+            "FunctionName",
+            "${environment}-statistics-service-async",
+            {
+              "id": "errors1",
+              "visible": false
+            }
+          ],
+          [
+            ".",
+            "Invocations",
+            ".",
+            ".",
+            {
+              "id": "invocations1",
+              "stat": "Sum",
+              "visible": false
+            }
+          ],
+          [
+            {
+              "expression": "100 - 100 * errors1 / MAX([errors1, invocations1])",
+              "label": "Success rate (%)",
+              "id": "availability1",
+              "yAxis": "right",
+              "region": "${aws_region}"
+            }
+          ]
+        ],
+        "period": 60,
+        "region": "${aws_region}",
+        "title": "Success rate (%)",
+        "yAxis": {
+          "right": {
+            "max": 100
+          }
+        },
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Sum",
+        "setPeriodToTimeRange": true
+      }
+    },
+    {
+      "height": 6,
+      "width": 6,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [
+            "AWS/Lambda",
+            "Errors",
+            "FunctionName",
+            "${environment}-booking-service-v2-sync",
+            {
+              "id": "errors1",
+              "visible": false
+            }
+          ],
+          [
+            ".",
+            "Invocations",
+            ".",
+            ".",
+            {
+              "id": "invocations1",
+              "stat": "Sum",
+              "visible": false
+            }
+          ],
+          [
+            {
+              "expression": "100 - 100 * errors1 / MAX([errors1, invocations1])",
+              "label": "Success rate (%)",
+              "id": "availability1",
+              "yAxis": "right",
+              "region": "${aws_region}"
+            }
+          ]
+        ],
+        "period": 60,
+        "region": "${aws_region}",
+        "title": "Success rate (%) - BS API Calls",
+        "yAxis": {
+          "right": {
+            "max": 100
+          }
+        },
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Sum",
+        "setPeriodToTimeRange": true
+      }
+    },
+    {
+      "height": 6,
+      "width": 6,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [
+            "AWS/Lambda",
+            "Errors",
+            "FunctionName",
+            "${environment}-statistics-service-sync",
+            {
+              "id": "errors1",
+              "visible": false
+            }
+          ],
+          [
+            ".",
+            "Invocations",
+            ".",
+            ".",
+            {
+              "id": "invocations1",
+              "stat": "Sum",
+              "visible": false
+            }
+          ],
+          [
+            {
+              "expression": "100 - 100 * errors1 / MAX([errors1, invocations1])",
+              "label": "Success rate (%)",
+              "id": "availability1",
+              "yAxis": "right",
+              "region": "${aws_region}"
+            }
+          ]
+        ],
+        "period": 60,
+        "region": "${aws_region}",
+        "title": "Success rate (%) - Statistics API Calls",
+        "yAxis": {
+          "right": {
+            "max": 100
+          }
+        },
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Sum",
+        "setPeriodToTimeRange": true
+      }
+    },
+    {
+      "height": 6,
+      "width": 6,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [
+            "AWS/Lambda",
+            "Errors",
+            "FunctionName",
+            "${environment}-fleet-service-sync",
+            {
+              "id": "errors1",
+              "visible": false
+            }
+          ],
+          [
+            ".",
+            "Invocations",
+            ".",
+            ".",
+            {
+              "id": "invocations1",
+              "stat": "Sum",
+              "visible": false
+            }
+          ],
+          [
+            {
+              "expression": "100 - 100 * errors1 / MAX([errors1, invocations1])",
+              "label": "Success rate (%)",
+              "id": "availability1",
+              "yAxis": "right",
+              "region": "${aws_region}"
+            }
+          ]
+        ],
+        "period": 60,
+        "region": "${aws_region}",
+        "title": "Success rate (%) - Fleet Service API Calls",
+        "yAxis": {
+          "right": {
+            "max": 100
+          }
+        },
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Sum",
+        "setPeriodToTimeRange": true
+      }
+    },
+    {
+      "height": 6,
+      "width": 6,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [
+            "AWS/Lambda",
+            "Errors",
+            "FunctionName",
+            "${environment}-graph-service-sync",
+            {
+              "id": "errors1",
+              "visible": false
+            }
+          ],
+          [
+            ".",
+            "Invocations",
+            ".",
+            ".",
+            {
+              "id": "invocations1",
+              "stat": "Sum",
+              "visible": false
+            }
+          ],
+          [
+            {
+              "expression": "100 - 100 * errors1 / MAX([errors1, invocations1])",
+              "label": "Success rate (%)",
+              "id": "availability1",
+              "yAxis": "right",
+              "region": "${aws_region}"
+            }
+          ]
+        ],
+        "period": 60,
+        "region": "${aws_region}",
+        "title": "Success rate (%) - Graph Service API Calls",
+        "yAxis": {
+          "right": {
+            "max": 100
+          }
+        },
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Sum",
+        "setPeriodToTimeRange": true
+      }
+    },
+    {
+      "height": 6,
+      "width": 6,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [
+            "AWS/Lambda",
+            "Errors",
+            "FunctionName",
+            "${environment}-graph-service-async",
+            {
+              "id": "errors1",
+              "visible": false
+            }
+          ],
+          [
+            ".",
+            "Invocations",
+            ".",
+            ".",
+            {
+              "id": "invocations1",
+              "stat": "Sum",
+              "visible": false
+            }
+          ],
+          [
+            {
+              "expression": "100 - 100 * errors1 / MAX([errors1, invocations1])",
+              "label": "Success rate (%)",
+              "id": "availability1",
+              "yAxis": "right",
+              "region": "${aws_region}"
+            }
+          ]
+        ],
+        "period": 60,
+        "region": "${aws_region}",
+        "title": "Success rate (%) - Graph Service async message processing",
+        "yAxis": {
+          "right": {
+            "max": 100
+          }
+        },
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Sum",
+        "setPeriodToTimeRange": true
+      }
+    },
+    {
+      "height": 6,
+      "width": 6,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [
+            "AWS/Lambda",
+            "Errors",
+            "FunctionName",
+            "${environment}-assignment-service-async",
+            {
+              "id": "errors1",
+              "visible": false
+            }
+          ],
+          [
+            ".",
+            "Invocations",
+            ".",
+            ".",
+            {
+              "id": "invocations1",
+              "stat": "Sum",
+              "visible": false
+            }
+          ],
+          [
+            {
+              "expression": "100 - 100 * errors1 / MAX([errors1, invocations1])",
+              "label": "Success rate (%)",
+              "id": "availability1",
+              "yAxis": "right",
+              "region": "${aws_region}"
+            }
+          ]
+        ],
+        "period": 60,
+        "region": "${aws_region}",
+        "title": "Success rate (%) - Assignment Service async message processing",
+        "yAxis": {
+          "right": {
+            "max": 100
+          }
+        },
+        "view": "timeSeries",
+        "stacked": false,
+        "stat": "Sum",
+        "setPeriodToTimeRange": true
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-fleet-manager' | fields @timestamp, @message  | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "Fleet Manager Logs",
+        "view": "table"
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-assignment-service-async' | fields @timestamp, @message  | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "Assignment Service Logs",
+        "view": "table"
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-graph-service-async' | SOURCE '/aws/lambda/${environment}-graph-service-sync' | fields @timestamp, @message  | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "Graph Service Logs",
+        "view": "table"
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-vehicle-service-async' | SOURCE '/aws/lambda/${environment}-vehicle-service-sync' | fields @timestamp, @message | fields @timestamp, @message  | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "Vehicle Service Logs",
+        "view": "table"
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-booking-service-v2-async' | SOURCE '/aws/lambda/${environment}-booking-service-v2-sync' | fields @timestamp, @message | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "Booking Service Logs",
+        "view": "table"
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-statistics-service-sync' | SOURCE '/aws/lambda/${environment}-statistics-service-async'  | fields @timestamp, @message | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "Statistics Service Logs",
+        "view": "table"
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-poi-service-sync' | fields @timestamp, @message | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "POI Service Logs",
+        "view": "table"
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-fleet-service-sync' | fields @timestamp, @message  | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "Fleet Service Logs",
+        "view": "table"
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-user-service-sync' | fields @timestamp, @message  | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "USER Service Logs",
+        "view": "table"
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-scheduling-service-async' | SOURCE '/aws/lambda/${environment}-scheduling-service-sync' | fields @timestamp, @message  | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "Scheduling Service Logs",
+        "view": "table"
+      }
+    }
+  ]
+}

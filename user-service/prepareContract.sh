@@ -3,6 +3,7 @@
 set -e
 SERVICE_NAME=user-service
 CONTRACT_FILE_NAME=${SERVICE_NAME}-contract.yaml
+CONTRACT_FILE_NAME_SIMPLE=${SERVICE_NAME}-contract-simple.yaml
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "${PARENT_PATH}"
 rm -rf ./src/contract
@@ -12,7 +13,8 @@ mkdir -p ./src/contract
 mkdir -p "${PARENT_PATH}"/../devops/contracts-ui/contracts
 #https://openapi-generator.tech/docs/generators/python-legacy/
 java -jar ../shared/openapi-generator-cli.jar generate -g python-flask -i ./contract.yaml -o ./build/ --additional-properties=useNose=true,packageName=contract,generateSourceCodeOnly=true
-cp "${PARENT_PATH}"/build/contract/openapi/openapi.yaml "${PARENT_PATH}"/../devops/contracts-ui/contracts/${CONTRACT_FILE_NAME}
+cp "${PARENT_PATH}"/build/contract/openapi/openapi.yaml "${PARENT_PATH}"/docs/${CONTRACT_FILE_NAME_SIMPLE}
+cp "${PARENT_PATH}"/docs/${CONTRACT_FILE_NAME_SIMPLE} "${PARENT_PATH}"/../devops/contracts-ui/contracts/${CONTRACT_FILE_NAME}
 ${PARENT_PATH}/../shared/test.sh
 
 # datamodel-codegen does not work with referenced definitions(shared-contract) it is bug

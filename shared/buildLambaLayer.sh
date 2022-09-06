@@ -16,5 +16,4 @@ rm -rf ${PARENT_PATH}/shared_python/dist/python/boto*
 cd ${PARENT_PATH}/shared_python/dist
 zip -r ./"${FILE_NAME_LAYER_ZIP}" ./python/*
 curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file ${PARENT_PATH}/shared_python/dist/"${FILE_NAME_LAYER_ZIP}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${FILE_NAME_LAYER}/${VER}/${FILE_NAME_LAYER_ZIP}"
-curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file ${PARENT_PATH}/shared_python/dist/"${FILE_NAME_LAYER_ZIP}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${FILE_NAME_LAYER}/latest/${FILE_NAME_LAYER_ZIP}"
 rm -rf ${PARENT_PATH}/shared_python/dist

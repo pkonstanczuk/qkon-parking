@@ -283,7 +283,7 @@ class CommonConfiguration:
         """
         if self.tfout is None:
             env = env_name()
-            obj = self.s3_client().get_object(Bucket="vizyah-artifacts", Key=f"devops/{env}/tfout.json")
+            obj = self.s3_client().get_object(Bucket="parkq-artifacts", Key=f"devops/{env}/tfout.json")
             self.tfout = json.load(obj["Body"])
         result = self.tfout
         first_part = True
