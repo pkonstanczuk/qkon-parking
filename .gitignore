@@ -90,10 +90,8 @@ venv/
 .terraform
 .tfstate
 
-#poetry
 poetry.lock
 /user-service/src/contract/
-/user-service/docs/
 /public/
 /devops/contracts-ui/contracts/
 #sonar

@@ -1,0 +1,124 @@
+{
+  "widgets": [
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-fleet-manager-async' | SOURCE '/aws/lambda/${environment}-fleet-manager-sync' | fields @timestamp, @message  | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '  | filter @message like 'error'",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "Fleet Manager Logs",
+        "view": "table"
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-assignment-service-async' | fields @timestamp, @message  | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '  | filter @message like 'error'",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "Assignment Service Logs",
+        "view": "table"
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-graph-service-async' | SOURCE '/aws/lambda/${environment}-graph-service-sync' | fields @timestamp, @message  | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '  | filter @message like 'error'",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "Graph Service Logs",
+        "view": "table"
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-vehicle-service' | fields @timestamp, @message | fields @timestamp, @message  | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '  | filter @message like 'error'",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "Vehicle Service Logs",
+        "view": "table"
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-booking-service-v2-async' | SOURCE '/aws/lambda/${environment}-booking-service-v2-sync' | fields @timestamp, @message | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '  | filter @message like 'error'",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "Booking Service Logs",
+        "view": "table"
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-statistics-service-sync' | SOURCE '/aws/lambda/${environment}-statistics-service-async'  | fields @timestamp, @message | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '  | filter @message like 'error'",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "Statistics Service Logs",
+        "view": "table"
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-poi-service-sync' | fields @timestamp, @message | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '  | filter @message like 'error'",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "POI Service Logs",
+        "view": "table"
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-fleet-service-sync' | fields @timestamp, @message  | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '  | filter @message like 'error'",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "Fleet Service Logs",
+        "view": "table"
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-user-service-sync' | fields @timestamp, @message  | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '  | filter @message like 'error'",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "USER Service Logs",
+        "view": "table"
+      }
+    },
+    {
+      "height": 12,
+      "width": 24,
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/${environment}-scheduling-service-async' | SOURCE '/aws/lambda/${environment}-scheduling-service-sync' | fields @timestamp, @message  | filter @message not like 'START RequestId: ' | filter @message not like 'END RequestId: '  | filter @message like 'error'",
+        "region": "${aws_region}",
+        "stacked": false,
+        "title": "Scheduling Service Logs",
+        "view": "table"
+      }
+    }
+  ]
+}

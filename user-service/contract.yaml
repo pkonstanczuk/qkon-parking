@@ -16,7 +16,7 @@ info:
     
     For clientId use: **1c6tnv36hslllcu6lh94q10pjb** . Select **openId** profile to make it work properly.
     
-    To reset Cognito logging in [click here.](https://vizyah-dev.auth.eu-central-1.amazoncognito.com/logout?client_id=1c6tnv36hslllcu6lh94q10pjb)
+    To reset Cognito logging in [click here.](https://parkq-dev.auth.eu-central-1.amazoncognito.com/logout?client_id=1c6tnv36hslllcu6lh94q10pjb)
     
    
 
@@ -150,8 +150,8 @@ components:
       type: oauth2
       flows:
         implicit:
-          authorizationUrl: 'https://vizyah-dev.auth.eu-central-1.amazoncognito.com/authorize'
-          refreshUrl: 'https://vizyah-dev.auth.eu-central-1.amazoncognito.com/oauth2/token'
+          authorizationUrl: 'https://parkq.auth.eu-central-1.amazoncognito.com/authorize'
+          refreshUrl: 'https://parkq.auth.eu-central-1.amazoncognito.com/oauth2/token'
           scopes:
             openid: 'requests user permissions'
       x-amazon-apigateway-authorizer:
