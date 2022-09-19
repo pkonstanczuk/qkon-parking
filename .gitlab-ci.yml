@@ -1,8 +1,38 @@
+#include:
+#  - template: Terraform/Base.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Terraform/Base.gitlab-ci.yml
+
+variables:
+  TF_ROOT: 'devops/terraform'  # The relative path to the root directory of the Terraform project
+  TF_VAR_code_version: ${CI_PIPELINE_IID}
+  AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+  AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+
+cache:
+  key: terraform-cache
+  paths:
+    - ${TF_ROOT}/.terraform
+
 stages:
   - initialize
   - validate
   - build
   - deploy
+
+deploy:dec:
+  stage: deploy
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  environment: dec
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+  script:
+    - echo "running release_job"
+  release: # See https://docs.gitlab.com/ee/ci/yaml/#release for available properties
+    tag_name: '0.0.$CI_PIPELINE_IID'                # The version is incremented per pipeline.
+    description: 'description for 0.0.$CI_PIPELINE_IID'
+    ref: '$CI_COMMIT_SHA'
+
+
+
 validate-user-service-job:
   image: qak87/qak87-ci:latest
   stage: validate

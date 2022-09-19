@@ -42,10 +42,6 @@ variable "is_production" {
   description = "Implements any security measures required for production environment"
 }
 
-variable "s3_vpc_address" {
-  type = string
-}
-
 variable "cognito_client_id" {
   type    = string
   default = "1c6tnv36hslllcu6lh94q10pjb"
