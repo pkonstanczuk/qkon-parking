@@ -25,11 +25,22 @@ deploy:dec:
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
   script:
-    - echo "running release_job"
+    - echo "releasing to DEC"
   release: # See https://docs.gitlab.com/ee/ci/yaml/#release for available properties
     tag_name: '0.0.$CI_PIPELINE_IID'                # The version is incremented per pipeline.
     description: 'description for 0.0.$CI_PIPELINE_IID'
     ref: '$CI_COMMIT_SHA'
+
+deploy:production:
+  stage: deploy
+  when: manual
+  environment: production
+  needs:
+    - deploy:dec
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+  script:
+    - echo "releasing to PROD"
 
 
 
