@@ -8,9 +8,9 @@ variables:
   AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
 
 cache:
-  key: terraform-cache
-  paths:
-    - ${TF_ROOT}/.terraform
+  - key: terraform-cache
+    paths:
+      - ${TF_ROOT}/.terraform
 
 stages:
   - initialize
@@ -62,6 +62,40 @@ validate-user-service-job:
         path: user-service/test-reports/coverage.xml
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      changes:
+        - user-service/*
+        - shared/*
+
+validate-spot-service-job:
+  image: amazoncorretto:11.0.16-alpine3.15
+  stage: validate
+  variables:
+    MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  cache:
+    paths:
+      - .m2/repository
+  script:
+    - cd spot-service
+    - ../mvnw $MAVEN_OPTS clean package
+  artifacts:
+    paths:
+      - spot-service/target/spot-service-*.jar
+      - spot-service/target/surefire-reports/*.xml
+    reports:
+      junit: spot-service/target/surefire-reports/*.xml
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+
+build-spot-service-job:
+  extends:
+    - validate-spot-service-job
+  stage: build
+  script:
+    - cd spot-service
+    - ../mvnw $MAVEN_OPTS versions:set -DnewVersion=0.0.${CI_PIPELINE_IID}
+    - ../mvnw $MAVEN_OPTS clean deploy -s ci_settings.xml
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
 
 validate-shared-qkon-job:
   image: qak87/qak87-ci:latest
@@ -79,6 +113,8 @@ validate-shared-qkon-job:
         path: shared/test-reports/coverage.xml
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      changes:
+        - shared/*
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
 
 publish-user-service-job: # This job runs in the build stage, which runs first.
@@ -98,12 +134,15 @@ validate-terraform:
     - devops/terraform/validateTerraform.sh
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      changes:
+        - devops/terraform/*
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
 
 
 validate-black-job: # This job runs in the build stage, which runs first.
   image: qak87/qak87-ci:latest
   stage: validate
+  cache: []
   script:
     - ./black.sh
   rules:
