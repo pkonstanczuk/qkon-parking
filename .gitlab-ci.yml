@@ -85,6 +85,9 @@ validate-spot-service-job:
       junit: spot-service/target/surefire-reports/*.xml
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      changes:
+        - spot-service/*
+        - shared/*
 
 build-spot-service-job:
   extends:
@@ -147,14 +150,22 @@ validate-black-job: # This job runs in the build stage, which runs first.
     - ./black.sh
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      changes:
+        - user-service/*
+        - shared/*
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+      changes:
+        - user-service/*
+        - shared/*
 pages:
   stage: deploy
+  image: qak87/qak87-ci:latest
   needs:
     - publish-user-service-job
   dependencies:
     - publish-user-service-job
   script:
+    - spot-service/devops/prepareContract.sh
     - mv devops/contracts-ui/ public/
   artifacts:
     paths:
