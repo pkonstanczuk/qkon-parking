@@ -93,6 +93,7 @@ venv/
 poetry.lock
 /user-service/src/contract/
 /public/
+/docs/
 /devops/contracts-ui/contracts/
 #sonar
 .coverage
