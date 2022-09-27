@@ -93,7 +93,7 @@ build-spot-service-job:
   script:
     - cd spot-service
     - ../mvnw $MAVEN_OPTS versions:set -DnewVersion=0.0.${CI_PIPELINE_IID}
-    - ../mvnw $MAVEN_OPTS clean deploy -s ci_settings.xml
+    - ../mvnw $MAVEN_OPTS clean deploy -s ../ci_settings.xml
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
 
