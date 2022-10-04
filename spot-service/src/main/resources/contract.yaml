@@ -66,11 +66,7 @@ components:
         - surname
       properties:
         token:
-          type: string
-          maxLength: 100
-          minLength: 1
-          example: 43098-320-323423-3243
-          readOnly: true
+          $ref: "./../../../../shared/shared.yaml#/SpotToken"
         name:
           type: string
           maxLength: 100

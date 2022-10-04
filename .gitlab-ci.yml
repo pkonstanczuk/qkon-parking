@@ -20,25 +20,47 @@ stages:
 
 deploy:dec:
   stage: deploy
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
   environment: dec
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
   script:
     - echo "releasing to DEC"
-  release: # See https://docs.gitlab.com/ee/ci/yaml/#release for available properties
+
+promote:release:
+  stage: deploy
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  when: manual
+  script:
+    - echo "Promoting to regular release"
+  needs:
+    - deploy:dec
+  release: #See https://docs.gitlab.com/ee/ci/yaml/#release for available properties
     tag_name: '0.0.$CI_PIPELINE_IID'                # The version is incremented per pipeline.
     description: 'description for 0.0.$CI_PIPELINE_IID'
     ref: '$CI_COMMIT_SHA'
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+
+deploy:iec:
+  stage: deploy
+  environment: iec
+  rules:
+    - if: "$CI_COMMIT_TAG"
+      variables:
+        VERSION: "$CI_COMMIT_TAG"
+  script:
+    - echo "releasing to IEC"
 
 deploy:production:
   stage: deploy
   when: manual
   environment: production
   needs:
-    - deploy:dec
+    - deploy:iec
   rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: "$CI_COMMIT_TAG"
+      variables:
+        VERSION: "$CI_COMMIT_TAG"
   script:
     - echo "releasing to PROD"
 
@@ -89,7 +111,7 @@ validate-spot-service-job:
         - spot-service/*
         - shared/*
 
-build-spot-service-job:
+publish-spot-service-job:
   extends:
     - validate-spot-service-job
   stage: build
@@ -145,7 +167,7 @@ validate-terraform:
 validate-black-job: # This job runs in the build stage, which runs first.
   image: qak87/qak87-ci:latest
   stage: validate
-  cache: []
+  cache: [ ]
   script:
     - ./black.sh
   rules:

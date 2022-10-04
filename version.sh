@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
-VERSION=${CI_PIPELINE_IID}
+if [ -z "$VERSION" ]
+then
+      VERSION=${CI_PIPELINE_IID}
+fi
 if [ -z "$VERSION" ]
 then
       VERSION=latest
