@@ -100,6 +100,7 @@
                     <version>6.2.0</version>
                     <executions>
                         <execution>
+                            <id>generateApi</id>
                             <goals>
                                 <goal>generate</goal>
                             </goals>
@@ -113,6 +114,28 @@
                                 <supportingFilesToGenerate>
                                     ApiUtil.java
                                 </supportingFilesToGenerate>
+                                <configOptions>
+                                    <delegatePattern>true</delegatePattern>
+                                    <annotationLibrary>none</annotationLibrary>
+                                    <documentationProvider>none</documentationProvider>
+                                    <openApiNullable>false</openApiNullable>
+                                    <interfaceOnly>true</interfaceOnly>
+                                    <library>spring-cloud</library>
+                                </configOptions>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>generateModel</id>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                            <configuration>
+                                <inputSpec>${project.basedir}/src/main/resources/models.yaml</inputSpec>
+                                <generatorName>spring</generatorName>
+                                <sourceFolder>src/gen/java/main</sourceFolder>
+                                <invokerPackage>pl.qkon.qparking</invokerPackage>
+                                <apiPackage>pl.qkon.qparking.api</apiPackage>
+                                <modelPackage>pl.qkon.qparking.model</modelPackage>
                                 <configOptions>
                                     <delegatePattern>true</delegatePattern>
                                     <annotationLibrary>none</annotationLibrary>

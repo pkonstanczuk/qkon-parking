@@ -1,0 +1,37 @@
+---
+openapi: 3.0.0
+info:
+  title: Spot Service Db Layer
+  description: The definitions of DynamoDb objects
+  contact:
+    email: przemek.konstanczuk@gmail.com
+  version: 1.0.0
+tags:
+  - name: dynamo
+    description: "Dynamo"
+paths:
+  /dynamo:
+    post:
+      summary: dynamo
+      operationId: dynamo
+      tags:
+        - dynamo
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    SpotEntity:
+      required:
+        - email
+        - name
+        - surname
+      properties:
+        token:
+          $ref: "./../../../../shared/shared.yaml#/SpotToken"
+        name:
+          type: string
+          maxLength: 100
+          minLength: 1
+          example: Piotr
+

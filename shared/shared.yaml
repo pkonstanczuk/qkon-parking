@@ -23,7 +23,12 @@ Location:
       $ref: '#/Longitude'
     address:
       $ref: '#/Address'
-
+SpotToken:
+  type: string
+  maxLength: 100
+  minLength: 1
+  example: "43098-320-323423-3243"
+  readOnly: true
 Longitude:
   type: number
   example: 52.249974
