@@ -30,6 +30,8 @@ promote:release:
   stage: deploy
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   when: manual
+  cache: [ ]
+  dependencies: [ ]
   script:
     - echo "Promoting to regular release"
   needs:
@@ -44,6 +46,8 @@ promote:release:
 deploy:iec:
   stage: deploy
   environment: iec
+  cache: [ ]
+  dependencies: [ ]
   rules:
     - if: "$CI_COMMIT_TAG"
       variables:
@@ -55,6 +59,8 @@ deploy:production:
   stage: deploy
   when: manual
   environment: production
+  cache: [ ]
+  dependencies: [ ]
   needs:
     - deploy:iec
   rules:
