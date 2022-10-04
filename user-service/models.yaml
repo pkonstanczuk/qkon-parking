@@ -1,0 +1,21 @@
+---
+openapi: 3.0.0
+info:
+  title: User Service Internal
+  description: The definitions of internal objects
+  contact:
+    email: przemek.konstanczuk@gmail.com
+  version: 1.0.0
+tags:
+  - name: internal
+    description: "internal"
+paths:
+  /internal:
+    post:
+      summary: internal
+      operationId: internal
+      tags:
+        - internal
+      responses:
+        "200":
+          description: OK

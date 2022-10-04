@@ -16,9 +16,15 @@
     </properties>
     <modules>
         <module>spot-service</module>
+        <module>user-service</module>
     </modules>
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk-cognitoidentity</artifactId>
+                <version>${aws-java-sdk.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk-dynamodb</artifactId>
@@ -105,7 +111,7 @@
                                 <goal>generate</goal>
                             </goals>
                             <configuration>
-                                <inputSpec>${project.basedir}/src/main/resources/contract.yaml</inputSpec>
+                                <inputSpec>${project.basedir}/contract.yaml</inputSpec>
                                 <generatorName>spring</generatorName>
                                 <sourceFolder>src/gen/java/main</sourceFolder>
                                 <invokerPackage>pl.qkon.qparking</invokerPackage>
@@ -130,7 +136,7 @@
                                 <goal>generate</goal>
                             </goals>
                             <configuration>
-                                <inputSpec>${project.basedir}/src/main/resources/models.yaml</inputSpec>
+                                <inputSpec>${project.basedir}/models.yaml</inputSpec>
                                 <generatorName>spring</generatorName>
                                 <sourceFolder>src/gen/java/main</sourceFolder>
                                 <invokerPackage>pl.qkon.qparking</invokerPackage>

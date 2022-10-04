@@ -4,16 +4,27 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import pl.qkon.qparking.router.ApiRouter;
 import pl.qkon.qparking.router.Logger;
-import pl.qkon.qparking.spot.SpotService;
+import pl.qkon.qparking.spot.Beans;
 import pl.qkon.qparking.validation.ValidationException;
 import pl.qkon.qparking.validation.Validator;
 
 import java.util.Optional;
 
+
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class LambdaRunner implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
-    private static final ApiRouter apiRouter = new ApiRouter(SpotService.create());
+
+    @NonNull
+    private final ApiRouter apiRouter;
+
+    public LambdaRunner() {
+        this(new ApiRouter(Beans.getSpotService()));
+    }
 
     //https://docs.aws.amazon.com/lambda/latest/dg/java-handler.html
     @Override
