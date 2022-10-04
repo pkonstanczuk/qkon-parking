@@ -1,0 +1,171 @@
+---
+openapi: 3.0.0
+info:
+  title: Spot Service Api
+  description: |
+    # Introduction
+    This is the description of the *Spot Service Api*. 
+    This specification is written in **OpenAPI Specification version 3** and can
+    be displayed using [Swagger](https://swagger.io). 
+    ---
+    
+    # Authentication
+    All APIs use the [HTTPS Authentication](https://tools.ietf.org/html/rfc7235)
+    with [JWT](https://jwt.io) passed as [Bearer token](https://swagger.io/docs/specification/authentication/bearer-authentication/).
+    Uses [AWS Cognito](https://aws.amazon.com/cognito/) as authentication and authorization service.
+    
+    For clientId use: **1c6tnv36hslllcu6lh94q10pjb** . Select **openId** profile to make it work properly.
+    
+    To reset Cognito logging in [click here.](https://parkq-dev.auth.eu-central-1.amazoncognito.com/logout?client_id=1c6tnv36hslllcu6lh94q10pjb)
+  
+  
+
+  contact:
+    email: przemek.konstanczuk@gmail.com
+  version: 0.0.5
+servers:
+  - url: https://dev.qkon.com/spot-service
+    description: DEV
+tags:
+  - name: spots
+    description: "Basic api"
+security:
+  - jwtAuthorizerOauth: [ openid, aws.cognito.signin.user.admin ]
+x-definitions:
+  lambda-integration:
+    type: object
+    x-amazon-apigateway-integration: &lambda-integration
+      type: "AWS_PROXY"
+      httpMethod: "POST"
+      uri: "${lambda_arn}"
+      payloadFormatVersion: "2.0"
+paths:
+  /spots:
+    post:
+      operationId: createSpot
+      tags:
+        - spots
+      x-amazon-apigateway-integration: *lambda-integration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Spot'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Spot'
+        "401":
+          description: Unauthorized
+    get:
+      operationId: getSpots
+      tags:
+        - spots
+      x-amazon-apigateway-integration: *lambda-integration
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Spot'
+        "401":
+          description: Unauthorized
+  /spots/{spotToken}:
+    put:
+      operationId: updateSpot
+      parameters:
+        - $ref: '#/components/parameters/spotToken'
+      tags:
+        - spots
+      x-amazon-apigateway-integration: *lambda-integration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Spot'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Spot'
+        "401":
+          description: Unauthorized
+    get:
+      operationId: getSpot
+      parameters:
+        - $ref: '#/components/parameters/spotToken'
+      tags:
+        - spots
+      x-amazon-apigateway-integration: *lambda-integration
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Spot'
+        "401":
+          description: Unauthorized
+    delete:
+      operationId: deleteSpot
+      parameters:
+        - $ref: '#/components/parameters/spotToken'
+      tags:
+        - spots
+      x-amazon-apigateway-integration: *lambda-integration
+      responses:
+        "204":
+          description: OK
+        "401":
+          description: Unauthorized
+components:
+  schemas:
+    Spot:
+      required:
+        - location
+        - token
+        - city
+      properties:
+        token:
+          $ref: "./../shared/shared.yaml#/SpotToken"
+        location:
+          $ref: "./../shared/shared.yaml#/Location"
+        name:
+          $ref: "./../shared/shared.yaml#/ObjectName"
+        city:
+          $ref: "./../shared/shared.yaml#/City"
+  parameters:
+    spotToken:
+      name: spotToken
+      in: path
+      required: true
+      schema:
+        $ref: "./../shared/shared.yaml#/SpotToken"
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+    jwtAuthorizerOauth: # This generates authorizer on API gateway on aws
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'https://parkq.auth.eu-central-1.amazoncognito.com/authorize'
+          refreshUrl: 'https://parkq.auth.eu-central-1.amazoncognito.com/oauth2/token'
+          scopes:
+            openid: 'requests user permissions'
+      x-amazon-apigateway-authorizer:
+        type: jwt
+        jwtConfiguration:
+          issuer: 'https://cognito-idp.eu-central-1.amazonaws.com/${cognito_user_pool_id}'
+          audience:
+            - ${cognito_client_id}
+        identitySource: "$request.header.Authorization"

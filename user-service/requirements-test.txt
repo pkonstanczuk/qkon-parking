@@ -1,8 +1,0 @@
-pytest>=6.2.3
-pytest-cov>=2.11.1
-pytest-mock>=3.6.1
-boto3>=1.20.25
-#https://github.com/miketheman/pytest-socket
-pytest-socket==0.4.1
-#https://github.com/miketheman/pytest-socket
-pytest-socket==0.4.1

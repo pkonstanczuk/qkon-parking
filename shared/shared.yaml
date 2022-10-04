@@ -23,6 +23,17 @@ Location:
       $ref: '#/Longitude'
     address:
       $ref: '#/Address'
+ObjectName:
+  type: string
+  maxLength: 100
+  minLength: 1
+  example: Piotr
+UserToken:
+  type: string
+  maxLength: 100
+  minLength: 1
+  example: "43098-320-323423-3243"
+  readOnly: true
 SpotToken:
   type: string
   maxLength: 100
@@ -53,3 +64,9 @@ EmailDefinition:
   type: string
   format: email
   example: "jan.kowalski@aleet.co"
+City:
+  enum:
+    - WARSAW
+    - WROCLAW
+  example: WARSAW
+  type: string

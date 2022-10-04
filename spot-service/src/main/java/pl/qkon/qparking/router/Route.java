@@ -8,8 +8,11 @@ import java.util.Arrays;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 enum Route {
-    CREATE_SPOT("POST", "/spots"),
-    GET_SPOTS("GET", "/spots");
+    CREATE_SPOT("POST", Constants.REST_MULTI_PATH),
+    DELETE_SPOT("DELETE", Constants.REST_SINGLE_PATH),
+    UPDATE_SPOT("PUT", Constants.REST_SINGLE_PATH),
+    GET_SPOT("GET", Constants.REST_SINGLE_PATH),
+    GET_SPOTS("GET", Constants.REST_MULTI_PATH);
 
     private final String httpMethod;
     private final String path;
@@ -22,5 +25,10 @@ enum Route {
                 .findAny()
                 .orElseThrow();
 
+    }
+
+    private static class Constants {
+        public static final String REST_SINGLE_PATH = "/spots/{spotToken}";
+        public static final String REST_MULTI_PATH = "/spots";
     }
 }

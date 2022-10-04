@@ -10,6 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import pl.qkon.qparking.router.ApiRouter;
+import pl.qkon.qparking.spot.TestHelper;
 
 import static org.mockito.Mockito.when;
 
@@ -19,7 +21,7 @@ class LambdaRunnerTest {
     void handleRequest(@Mock Context context) {
         when(context.getLogger()).thenReturn(Mockito.mock(LambdaLogger.class));
 
-        var lr = new LambdaRunner();
+        var lr = new LambdaRunner(new ApiRouter(TestHelper.getTestSpotService()));
         APIGatewayProxyResponseEvent result = lr.handleRequest(new APIGatewayProxyRequestEvent()
                 .withHttpMethod("GET")
                 .withPath("/spots"), context);

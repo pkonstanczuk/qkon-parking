@@ -70,31 +70,6 @@ deploy:production:
   script:
     - echo "releasing to version $VERSION"
 
-
-
-validate-user-service-job:
-  image: qak87/qak87-ci:latest
-  stage: validate
-  interruptible: true
-  script:
-    - user-service/prepareArtifacts.sh
-  artifacts:
-    paths:
-      - devops/contracts-ui/contracts
-      - user-service/build
-      - user-service/test-reports/coverage.xml
-      - user-service/test-reports/nosetests.xml
-    reports:
-      junit: user-service/test-reports/nosetests.xml
-      coverage_report:
-        coverage_format: cobertura
-        path: user-service/test-reports/coverage.xml
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-      changes:
-        - user-service/*
-        - shared/*
-
 validate-spot-service-job:
   image: amazoncorretto:11.0.16-alpine3.15
   stage: validate
@@ -130,6 +105,41 @@ publish-spot-service-job:
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
 
+validate-user-service-job:
+  image: amazoncorretto:11.0.16-alpine3.15
+  stage: validate
+  interruptible: true
+  variables:
+    MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  cache:
+    paths:
+      - .m2/repository
+  script:
+    - cd user-service
+    - ../mvnw $MAVEN_OPTS clean package
+  artifacts:
+    paths:
+      - user-service/target/user-service-*.jar
+      - user-service/target/surefire-reports/*.xml
+    reports:
+      junit: user-service/target/surefire-reports/*.xml
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      changes:
+        - user-service/*
+        - shared/*
+
+publish-user-service-job:
+  extends:
+    - validate-user-service-job
+  stage: build
+  script:
+    - cd user-service
+    - ../mvnw $MAVEN_OPTS versions:set -DnewVersion=${CI_PIPELINE_IID}
+    - ../mvnw $MAVEN_OPTS clean deploy -s ../ci_settings.xml
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+
 validate-shared-qkon-job:
   image: qak87/qak87-ci:latest
   stage: validate
@@ -149,15 +159,6 @@ validate-shared-qkon-job:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
       changes:
         - shared/*
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-
-publish-user-service-job: # This job runs in the build stage, which runs first.
-  extends:
-    - validate-user-service-job
-  stage: build
-  script:
-    - user-service/prepareArtifacts.sh --publish
-  rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
 
 validate-terraform:

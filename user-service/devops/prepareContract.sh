@@ -1,5 +1,5 @@
 set -e
-SERVICE_NAME=spot-service
+SERVICE_NAME=user-service
 CONTRACT_FILE_NAME=${SERVICE_NAME}-contract.yaml
 DEVOPS_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "${DEVOPS_PATH}"

@@ -23,15 +23,18 @@ components:
   schemas:
     SpotEntity:
       required:
-        - email
-        - name
-        - surname
+        - location
+        - city
+        - token
+        - userToken
       properties:
         token:
-          $ref: "./../../../../shared/shared.yaml#/SpotToken"
+          $ref: "./../shared/shared.yaml#/SpotToken"
+        userToken:
+          $ref: "./../shared/shared.yaml#/UserToken"
+        location:
+          $ref: "./../shared/shared.yaml#/Location"
         name:
-          type: string
-          maxLength: 100
-          minLength: 1
-          example: Piotr
-
+          $ref: "./../shared/shared.yaml#/ObjectName"
+        city:
+          $ref: "./../shared/shared.yaml#/City"
