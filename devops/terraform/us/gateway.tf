@@ -1,6 +1,6 @@
 locals {
   api_definition = templatefile(
-    "${path.module}/../../../user-service/docs/${local.service_name}-contract-simple.yaml",
+    "${path.module}/../../../devops/contracts-ui/contracts/${local.service_name}-contract.yaml",
     {
       lambda_arn           = aws_lambda_function.service.invoke_arn
       environment          = terraform.workspace

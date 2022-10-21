@@ -21,6 +21,12 @@ paths:
           description: OK
 components:
   schemas:
+    User:
+      required:
+        - userToken
+      properties:
+        userToken:
+          $ref: "./../shared/shared.yaml#/UserToken"
     SpotEntity:
       required:
         - location
