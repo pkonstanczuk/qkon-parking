@@ -167,7 +167,7 @@ validate-terraform:
   interruptible: true
   script:
     - devops/terraform/validateTerraformFormatting.sh
-    - devops/terraform/validateTerraform.sh
+#  TODO later   - devops/terraform/validateTerraform.sh
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
       changes:
