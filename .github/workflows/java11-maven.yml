@@ -17,6 +17,6 @@ jobs:
           java-version: '11'
           distribution: 'corretto'
       - name: Publish package
-        run: ./mvnw --batch-mode package
+        run: ./mvnw --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
