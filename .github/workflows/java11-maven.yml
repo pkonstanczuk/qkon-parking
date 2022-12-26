@@ -21,3 +21,9 @@ jobs:
         run: ./mvnw --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: spot-service
+          path: |
+            spot-service/target/spot-service-*.jar
