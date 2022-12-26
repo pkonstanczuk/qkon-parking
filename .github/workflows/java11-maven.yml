@@ -16,6 +16,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'corretto'
+          cache: 'maven'
       - name: Publish package
         run: ./mvnw --batch-mode deploy
         env:
